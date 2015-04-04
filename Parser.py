@@ -27,12 +27,20 @@ with open('./dependency/register.txt', 'r', encoding='UTF-8') as file:
     	register_map[key] = int(value)
 
 # fields only literal symbols or digit
+def resovle_digit_form(digit_str):
+	if re.match("[+-]?0x[0-9]+", digit_str):
+		return 16
+	else:
+		return 10
+
 def resolve_symbols(fields):
 	for key in fields:
 		if key in lazyresolved_field:
 			continue
 		try:
 			value = fields[key]
+			print(key, value)
+
 			if value in register_map:
 				# print(value, register_map[value])
 				# print("%s : 0x%08X"%(key, ((register_map[value]) << field_offset[key])))
@@ -40,7 +48,8 @@ def resolve_symbols(fields):
 			else:
 				# print(value)
 				# print("%s : 0x%08X"%(key, ((int(value)) << field_offset[key])))
-				yield ((int(value) & field_mask[key]) << field_offset[key])
+				print("base : %d"%resovle_digit_form(value))
+				yield ((int(value, resovle_digit_form(value)) & field_mask[key]) << field_offset[key])
 		except ValueError as e:
 			raise KeyError
 
@@ -101,7 +110,7 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
     for line in file:
     	line = line.strip()
     	op = line.split(' ', 1);
-
+    	print(op)
     	# Parse labels
     	if op[0].endswith(':'):
     		labels[op[0][:-1]] = pc_offset
@@ -114,7 +123,7 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
     	# Parse expression
     	try:
     		#print(pc_offset)
-    		print(op[0])
+    		# print(op[0])
     		match = re.match(opcode_map[op[0]]["regex"], line)
     		# Syntax check
     		if match:
@@ -136,8 +145,7 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
     	except KeyError as e:
     		print("Unknown command: ", e)
 
-# Resolve words
-# print("Unresolved words:")
+# Lazy Resolve words
 for record in unresolved_word:
 	if record["op"] == "jal":
 		resolve_jal(record["pc"], record["label"])

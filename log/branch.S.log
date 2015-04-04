@@ -1,70 +1,228 @@
-lhu
-{'rt': '2', 'immediate': '0', 'rs': '0'}
-bne
-{'addr': 'x_not_0', 'rt': '0', 'rs': '2'}
-ori
-{'rt': '5', 'rs': '0', 'immediate': '0'}
-lbu
-{'rt': '3', 'immediate': '2', 'rs': '0'}
-slt
-{'rt': '3', 'rd': '6', 'rs': '5'}
-bne
-{'addr': 'x_0_else', 'rt': '0', 'rs': '6'}
-lb
-{'rt': '4', 'immediate': '3', 'rs': '0'}
-slti
-{'rt': '6', 'rs': '4', 'immediate': '-0'}
-bne
-{'addr': 'x_0_else', 'rt': '0', 'rs': '6'}
-addi
-{'rt': '7', 'rs': '0', 'immediate': '1'}
-beq
-{'addr': 'end', 'rt': '0', 'rs': '0'}
-addi
-{'rt': '7', 'rs': '0', 'immediate': '-1'}
-beq
-{'addr': 'end', 'rt': '0', 'rs': '0'}
-ori
-{'rt': '5', 'rs': '0', 'immediate': '0'}
-lbu
-{'rt': '3', 'immediate': '2', 'rs': '0'}
-slt
-{'rt': '3', 'rd': '6', 'rs': '5'}
-bne
-{'addr': 'x_1_1', 'rt': '0', 'rs': '6'}
-lb
-{'rt': '4', 'immediate': '3', 'rs': '0'}
-slti
-{'rt': '6', 'rs': '4', 'immediate': '-0'}
-beq
-{'addr': 'x_1_2_b', 'rt': '0', 'rs': '6'}
-addi
-{'rt': '7', 'rs': '0', 'immediate': '2'}
-beq
-{'addr': 'end', 'rt': '0', 'rs': '0'}
-bne
-{'addr': 'x_1_3', 'rt': '5', 'rs': '3'}
-addi
-{'rt': '5', 'rs': '0', 'immediate': '-0'}
-bne
-{'addr': 'x_1_3', 'rt': '5', 'rs': '4'}
-andi
-{'rt': '7', 'rs': '0', 'immediate': '0'}
-beq
-{'addr': 'end', 'rt': '0', 'rs': '0'}
-addi
-{'rt': '7', 'rs': '0', 'immediate': '-2'}
-sh
-{'rt': '7', 'immediate': '4', 'rs': '0'}
-lh
-{'rt': '8', 'immediate': '4', 'rs': '0'}
-halt
+['lhu', ' $2, 0($0)        # $2 = x']
+{'immediate': '0', 'rs': '0', 'rt': '2'}
+immediate 0
+base : 10
+rs 0
+base : 10
+rt 2
+base : 10
+['bne', ' $2, $0, x_not_0']
+{'addr': 'x_not_0', 'rs': '2', 'rt': '0'}
+rs 2
+base : 10
+rt 0
+base : 10
+['ori', ' $5, $0, 0x88     # $5 = 0x88']
+{'immediate': '0x88', 'rs': '0', 'rt': '5'}
+immediate 0x88
+base : 16
+rs 0
+base : 10
+rt 5
+base : 10
+['lbu', ' $3, 2($0)        # $3 = y']
+{'immediate': '2', 'rs': '0', 'rt': '3'}
+immediate 2
+base : 10
+rs 0
+base : 10
+rt 3
+base : 10
+['slt', ' $6, $5, $3       # $6 = !( y <= 0x88 ) = ( 0x88 < y )']
+{'rs': '5', 'rt': '3', 'rd': '6'}
+rs 5
+base : 10
+rt 3
+base : 10
+rd 6
+base : 10
+['bne', ' $6, $0, x_0_else']
+{'addr': 'x_0_else', 'rs': '6', 'rt': '0'}
+rs 6
+base : 10
+rt 0
+base : 10
+['lb', '  $4, 3($0)        # $4 = z']
+{'immediate': '3', 'rs': '0', 'rt': '4'}
+immediate 3
+base : 10
+rs 0
+base : 10
+rt 4
+base : 10
+['slti', '$6, $4, -0x80    # $6 = ( z < -0x80 )']
+{'immediate': '-0x80', 'rs': '4', 'rt': '6'}
+immediate -0x80
+base : 16
+rs 4
+base : 10
+rt 6
+base : 10
+['bne', ' $6, $0, x_0_else']
+{'addr': 'x_0_else', 'rs': '6', 'rt': '0'}
+rs 6
+base : 10
+rt 0
+base : 10
+['addi', '$7, $0, 1']
+{'immediate': '1', 'rs': '0', 'rt': '7'}
+immediate 1
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['beq', ' $0, $0, end']
+{'addr': 'end', 'rs': '0', 'rt': '0'}
+rs 0
+base : 10
+rt 0
+base : 10
+['x_0_else:', 'addi $7, $0, -1']
+{'immediate': '-1', 'rs': '0', 'rt': '7'}
+immediate -1
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['beq', ' $0, $0, end']
+{'addr': 'end', 'rs': '0', 'rt': '0'}
+rs 0
+base : 10
+rt 0
+base : 10
+['x_not_0:', 'ori  $5, $0, 0x88     # $5 = 0x88']
+{'immediate': '0x88', 'rs': '0', 'rt': '5'}
+immediate 0x88
+base : 16
+rs 0
+base : 10
+rt 5
+base : 10
+['lbu', ' $3, 2($0)        # $3 = y']
+{'immediate': '2', 'rs': '0', 'rt': '3'}
+immediate 2
+base : 10
+rs 0
+base : 10
+rt 3
+base : 10
+['slt', ' $6, $5, $3       # $6 = ( 0x88 < y )']
+{'rs': '5', 'rt': '3', 'rd': '6'}
+rs 5
+base : 10
+rt 3
+base : 10
+rd 6
+base : 10
+['bne', ' $6, $0, x_1_1']
+{'addr': 'x_1_1', 'rs': '6', 'rt': '0'}
+rs 6
+base : 10
+rt 0
+base : 10
+['lb', '  $4, 3($0)        # $4 = z']
+{'immediate': '3', 'rs': '0', 'rt': '4'}
+immediate 3
+base : 10
+rs 0
+base : 10
+rt 4
+base : 10
+['slti', '$6, $4, -0x80    # $6 = ( z < -0x80 )']
+{'immediate': '-0x80', 'rs': '4', 'rt': '6'}
+immediate -0x80
+base : 16
+rs 4
+base : 10
+rt 6
+base : 10
+['beq', ' $6, $0, x_1_2_b']
+{'addr': 'x_1_2_b', 'rs': '6', 'rt': '0'}
+rs 6
+base : 10
+rt 0
+base : 10
+['x_1_1:', 'addi $7, $0, 2']
+{'immediate': '2', 'rs': '0', 'rt': '7'}
+immediate 2
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['beq', ' $0, $0, end']
+{'addr': 'end', 'rs': '0', 'rt': '0'}
+rs 0
+base : 10
+rt 0
+base : 10
+['x_1_2_b:', 'bne  $3, $5, x_1_3']
+{'addr': 'x_1_3', 'rs': '3', 'rt': '5'}
+rs 3
+base : 10
+rt 5
+base : 10
+['addi', '$5, $0, -0x80    # $5 = 0xFFFFFF80']
+{'immediate': '-0x80', 'rs': '0', 'rt': '5'}
+immediate -0x80
+base : 16
+rs 0
+base : 10
+rt 5
+base : 10
+['bne', ' $4, $5, x_1_3']
+{'addr': 'x_1_3', 'rs': '4', 'rt': '5'}
+rs 4
+base : 10
+rt 5
+base : 10
+['andi', '$7, $0, 0']
+{'immediate': '0', 'rs': '0', 'rt': '7'}
+immediate 0
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['beq', ' $0, $0, end']
+{'addr': 'end', 'rs': '0', 'rt': '0'}
+rs 0
+base : 10
+rt 0
+base : 10
+['x_1_3:', 'addi $7, $0, -2']
+{'immediate': '-2', 'rs': '0', 'rt': '7'}
+immediate -2
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['end:', 'sh   $7, 4($0)        # store k']
+{'immediate': '4', 'rs': '0', 'rt': '7'}
+immediate 4
+base : 10
+rs 0
+base : 10
+rt 7
+base : 10
+['lh', '  $8, 4($0)']
+{'immediate': '4', 'rs': '0', 'rt': '8'}
+immediate 4
+base : 10
+rs 0
+base : 10
+rt 8
+base : 10
+['halt']
 {}
-halt
+['halt']
 {}
-halt
+['halt']
 {}
-halt
+['halt']
 {}
-halt
+['halt']
 {}
