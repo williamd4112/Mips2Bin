@@ -24,8 +24,8 @@ andi 30000000 andi\s*\$(?P<rt>[A-Za-z0-9]+),\s*\$(?P<rs>[A-Za-z0-9]+),\s*(?P<imm
 ori 34000000 ori\s*\$(?P<rt>[A-Za-z0-9]+),\s*\$(?P<rs>[A-Za-z0-9]+),\s*(?P<immediate>[+-]?[0-9]+)
 nori 38000000 nori\s*\$(?P<rt>[A-Za-z0-9]+),\s*\$(?P<rs>[A-Za-z0-9]+),\s*(?P<immediate>[+-]?[0-9]+)
 slti 28000000 slti\s*\$(?P<rt>[A-Za-z0-9]+),\s*\$(?P<rs>[A-Za-z0-9]+),\s*(?P<immediate>[+-]?[0-9]+)
-beq 10000000 beq\s*\$(?P<rs>[A-Za-z0-9]+),\s*\$(?P<rt>[A-Za-z0-9]+),\s*(?P<addr>[A-Za-z0-9]+)
-bne 14000000 bne\s*\$(?P<rs>[A-Za-z0-9]+),\s*\$(?P<rt>[A-Za-z0-9]+),\s*(?P<addr>[A-Za-z0-9]+)
+beq 10000000 beq\s*\$(?P<rs>[A-Za-z0-9]+),\s*\$(?P<rt>[A-Za-z0-9]+),\s*(?P<addr>[^#]+)
+bne 14000000 bne\s*\$(?P<rs>[A-Za-z0-9]+),\s*\$(?P<rt>[A-Za-z0-9]+),\s*(?P<addr>[^#]+)
 j 08000000 ^j\s*(?P<addr>[A-Za-z0-9]+)
 jal 0C000000 ^jal\s*(?P<addr>[A-Za-z0-9]+)
 halt ffffffff halt

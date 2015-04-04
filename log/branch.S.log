@@ -1,0 +1,70 @@
+lhu
+{'rt': '2', 'immediate': '0', 'rs': '0'}
+bne
+{'addr': 'x_not_0', 'rt': '0', 'rs': '2'}
+ori
+{'rt': '5', 'rs': '0', 'immediate': '0'}
+lbu
+{'rt': '3', 'immediate': '2', 'rs': '0'}
+slt
+{'rt': '3', 'rd': '6', 'rs': '5'}
+bne
+{'addr': 'x_0_else', 'rt': '0', 'rs': '6'}
+lb
+{'rt': '4', 'immediate': '3', 'rs': '0'}
+slti
+{'rt': '6', 'rs': '4', 'immediate': '-0'}
+bne
+{'addr': 'x_0_else', 'rt': '0', 'rs': '6'}
+addi
+{'rt': '7', 'rs': '0', 'immediate': '1'}
+beq
+{'addr': 'end', 'rt': '0', 'rs': '0'}
+addi
+{'rt': '7', 'rs': '0', 'immediate': '-1'}
+beq
+{'addr': 'end', 'rt': '0', 'rs': '0'}
+ori
+{'rt': '5', 'rs': '0', 'immediate': '0'}
+lbu
+{'rt': '3', 'immediate': '2', 'rs': '0'}
+slt
+{'rt': '3', 'rd': '6', 'rs': '5'}
+bne
+{'addr': 'x_1_1', 'rt': '0', 'rs': '6'}
+lb
+{'rt': '4', 'immediate': '3', 'rs': '0'}
+slti
+{'rt': '6', 'rs': '4', 'immediate': '-0'}
+beq
+{'addr': 'x_1_2_b', 'rt': '0', 'rs': '6'}
+addi
+{'rt': '7', 'rs': '0', 'immediate': '2'}
+beq
+{'addr': 'end', 'rt': '0', 'rs': '0'}
+bne
+{'addr': 'x_1_3', 'rt': '5', 'rs': '3'}
+addi
+{'rt': '5', 'rs': '0', 'immediate': '-0'}
+bne
+{'addr': 'x_1_3', 'rt': '5', 'rs': '4'}
+andi
+{'rt': '7', 'rs': '0', 'immediate': '0'}
+beq
+{'addr': 'end', 'rt': '0', 'rs': '0'}
+addi
+{'rt': '7', 'rs': '0', 'immediate': '-2'}
+sh
+{'rt': '7', 'immediate': '4', 'rs': '0'}
+lh
+{'rt': '8', 'immediate': '4', 'rs': '0'}
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
