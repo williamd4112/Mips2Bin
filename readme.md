@@ -7,7 +7,8 @@
 3. use python3 to open the "Parser.py"
 4. enter data memory file's relative directory
 5. enter soruce code file's relative directory
-6. finally, <source file name>_iimage.bin and <data file name>_dimage.bin will be in the output directory
+6. enter the base PC address
+7. finally, <source file name>_iimage.bin and <data file name>_dimage.bin will be in the output directory
 
 ## Data file format:
 prefix sp means the sp value
