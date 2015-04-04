@@ -28,7 +28,7 @@ with open('./dependency/register.txt', 'r', encoding='UTF-8') as file:
 
 # fields only literal symbols or digit
 def resovle_digit_form(digit_str):
-	if re.match("[+-]?0x[0-9]+", digit_str):
+	if re.match("[+-]?0x[0-9A-Fa-f]+", digit_str):
 		return 16
 	else:
 		return 10
@@ -39,18 +39,13 @@ def resolve_symbols(fields):
 			continue
 		try:
 			value = fields[key]
-			print(key, value)
 
 			if value in register_map:
-				# print(value, register_map[value])
-				# print("%s : 0x%08X"%(key, ((register_map[value]) << field_offset[key])))
 				yield (((register_map[value]) & field_mask[key]) << field_offset[key])
 			else:
-				# print(value)
-				# print("%s : 0x%08X"%(key, ((int(value)) << field_offset[key])))
-				print("base : %d"%resovle_digit_form(value))
 				yield ((int(value, resovle_digit_form(value)) & field_mask[key]) << field_offset[key])
 		except ValueError as e:
+			print(e)
 			raise KeyError
 
 def resolve(command_pc, op, fields):
@@ -58,23 +53,21 @@ def resolve(command_pc, op, fields):
 		for field in resolve_symbols(fields):
 			word = iimage[int((command_pc - base_pc) / 4)] 
 			iimage[int((command_pc - base_pc) / 4)]  = word | field
-			# print("word = 0x%08X"%iimage[int((command_pc - base_pc) / 4)])
 	except KeyError as e:
-		print("Unresolved symbols")
+		print("Unresolved symbols " ,op, fields)
 
 def resolve_jal(command_pc, jump_label):
 	# label_pc = pc_part | x << 2
 	label_pc = labels[jump_label]
 	c = (label_pc & 0x0FFFFFFF) >> 2; # mask pc part, and shift right 2
 	iimage[int((command_pc - base_pc) / 4)] = iimage[int((command_pc - base_pc) / 4)] | c
-	# print("0x%08X"%iimage[int((command_pc - base_pc) / 4)], command_pc)
+
 
 def resolve_beq(command_pc, jump_label):
 	# label_pc = command_pc + 4 + 4 * c
 	label_pc = labels[jump_label]
 	c = ((label_pc - command_pc - 4) >> 2) & 0x0000ffff
 	iimage[int((command_pc - base_pc) / 4)] = iimage[int((command_pc - base_pc) / 4)] | c
-	# print("0x%08X"%iimage[int((command_pc - base_pc) / 4)], command_pc)
 
 def writeWord(word):
 	offsets = [24, 16, 8, 0]
@@ -110,11 +103,11 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
     for line in file:
     	line = line.strip()
     	op = line.split(' ', 1);
-    	print(op)
+
     	# Parse labels
     	if op[0].endswith(':'):
     		labels[op[0][:-1]] = pc_offset
-    		# print(op[0][:-1], pc_offset)
+
     		# label and expression in the same line
     		if len(op) > 1:
     			line = op[1]
@@ -122,9 +115,9 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
 
     	# Parse expression
     	try:
-    		#print(pc_offset)
-    		# print(op[0])
+    		print(op[0])
     		match = re.match(opcode_map[op[0]]["regex"], line)
+
     		# Syntax check
     		if match:
     			fields = match.groupdict()
@@ -136,18 +129,18 @@ with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
     			# If lazy resolved
     			if op[0] in lazyresolved_op:
     				unresolved_word.append({"pc":pc_offset, "op":op[0],"label": fields["addr"]})
-
     		else:
     			print("Syntax Error at %d: %s"%(pc_offset, op[0]))
 
     		# Read next instruction
     		pc_offset = pc_offset + 4
+
     	except KeyError as e:
     		print("Unknown command: ", e)
 
 # Lazy Resolve words
 for record in unresolved_word:
-	if record["op"] == "jal":
+	if record["op"] == "jal" or record["op"] == "j":
 		resolve_jal(record["pc"], record["label"])
 	elif record["op"] == "beq" or record["op"] == "bne":
 		resolve_beq(record["pc"], record["label"])
@@ -170,4 +163,5 @@ with open("./output/" + target_data + "_dmage.bin", 'bw+') as file:
 	for word in dimage:
 		writeWord(word)
 	print("./output/" + target_data + "_dmage.bin" + " output")
+	
 print('./log/' + target_src + '.log' + " output")

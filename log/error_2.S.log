@@ -1,0 +1,42 @@
+['lw', '$0, 0($0)']
+lw
+{'rs': '0', 'rt': '0', 'immediate': '0'}
+rs 0
+0
+rt 0
+0
+immediate 0
+0
+['lw', '$8, 2($0)']
+lw
+{'rs': '0', 'rt': '8', 'immediate': '2'}
+rs 0
+0
+rt 8
+8
+immediate 2
+2
+['nor', '$1, $1, $1']
+nor
+{'rs': '1', 'rt': '1', 'rd': '1'}
+rs 1
+1
+rt 1
+1
+rd 1
+1
+['halt']
+halt
+{}
+['halt']
+halt
+{}
+['halt']
+halt
+{}
+['halt']
+halt
+{}
+['halt']
+halt
+{}

@@ -1,0 +1,141 @@
+lw
+{'rs': '0', 'rt': '2', 'immediate': '0x8'}
+rs 0
+digit: 0
+rt 2
+digit: 2
+immediate 0x8
+digit: 0x8
+addi
+{'rs': '0', 'rt': '3', 'immediate': '1'}
+rs 0
+digit: 0
+rt 3
+digit: 3
+immediate 1
+digit: 1
+slt
+{'rd': '4', 'rt': '2', 'rs': '3'}
+rd 4
+digit: 4
+rt 2
+digit: 2
+rs 3
+digit: 3
+bne
+{'rs': '4', 'rt': '0', 'addr': 'else'}
+rs 4
+digit: 4
+rt 0
+digit: 0
+or
+{'rd': '8', 'rt': '2', 'rs': '0'}
+rd 8
+digit: 8
+rt 2
+digit: 2
+rs 0
+digit: 0
+j
+{'addr': 'end'}
+lw
+{'rs': '0', 'rt': '6', 'immediate': '0x10'}
+rs 0
+digit: 0
+rt 6
+digit: 6
+immediate 0x10
+digit: 0x10
+lw
+{'rs': '0', 'rt': '7', 'immediate': '0x14'}
+rs 0
+digit: 0
+rt 7
+digit: 7
+immediate 0x14
+digit: 0x14
+addi
+{'rs': '0', 'rt': '5', 'immediate': '2'}
+rs 0
+digit: 0
+rt 5
+digit: 5
+immediate 2
+digit: 2
+slt
+{'rd': '4', 'rt': '5', 'rs': '2'}
+rd 4
+digit: 4
+rt 5
+digit: 5
+rs 2
+digit: 2
+bne
+{'rs': '4', 'rt': '0', 'addr': 'end'}
+rs 4
+digit: 4
+rt 0
+digit: 0
+add
+{'rd': '8', 'rt': '7', 'rs': '6'}
+rd 8
+digit: 8
+rt 7
+digit: 7
+rs 6
+digit: 6
+or
+{'rd': '6', 'rt': '7', 'rs': '0'}
+rd 6
+digit: 6
+rt 7
+digit: 7
+rs 0
+digit: 0
+or
+{'rd': '7', 'rt': '8', 'rs': '0'}
+rd 7
+digit: 7
+rt 8
+digit: 8
+rs 0
+digit: 0
+addi
+{'rs': '5', 'rt': '5', 'immediate': '1'}
+rs 5
+digit: 5
+rt 5
+digit: 5
+immediate 1
+digit: 1
+j
+{'addr': 'loop'}
+sw
+{'rs': '0', 'rt': '8', 'immediate': '0xC'}
+rs 0
+digit: 0
+rt 8
+digit: 8
+immediate 0xC
+digit: 0xC
+lh
+{'rs': '0', 'rt': '9', 'immediate': '0xC'}
+rs 0
+digit: 0
+rt 9
+digit: 9
+immediate 0xC
+digit: 0xC
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
+else 360
+loop 372
+end 400

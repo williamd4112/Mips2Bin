@@ -1,0 +1,131 @@
+addi
+{'rt': 'sp', 'immediate': '-4', 'rs': 'sp'}
+rt sp
+immediate -4
+digit: -4
+rs sp
+sw
+{'rt': 'ra', 'immediate': '0', 'rs': 'sp'}
+rt ra
+immediate 0
+digit: 0
+rs sp
+lw
+{'rt': 'a0', 'immediate': '0', 'rs': '0'}
+rt a0
+immediate 0
+digit: 0
+rs 0
+digit: 0
+jal
+{'addr': 'sumToN'}
+sw
+{'rt': 'v0', 'immediate': '4', 'rs': '0'}
+rt v0
+immediate 4
+digit: 4
+rs 0
+digit: 0
+lw
+{'rt': 'ra', 'immediate': '0', 'rs': 'sp'}
+rt ra
+immediate 0
+digit: 0
+rs sp
+addi
+{'rt': 'sp', 'immediate': '4', 'rs': 'sp'}
+rt sp
+immediate 4
+digit: 4
+rs sp
+lw
+{'rt': 'v1', 'immediate': '4', 'rs': '0'}
+rt v1
+immediate 4
+digit: 4
+rs 0
+digit: 0
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
+halt
+{}
+slti
+{'rt': 't0', 'immediate': '2', 'rs': 'a0'}
+rt t0
+immediate 2
+digit: 2
+rs a0
+beq
+{'addr': 'recur', 'rs': 't0', 'rt': '0'}
+rs t0
+rt 0
+digit: 0
+or
+{'rd': 'v0', 'rs': 'a0', 'rt': '0'}
+rd v0
+rs a0
+rt 0
+digit: 0
+jr
+{'rs': 'ra'}
+rs ra
+addi
+{'rt': 'sp', 'immediate': '-8', 'rs': 'sp'}
+rt sp
+immediate -8
+digit: -8
+rs sp
+sw
+{'rt': 'ra', 'immediate': '4', 'rs': 'sp'}
+rt ra
+immediate 4
+digit: 4
+rs sp
+sw
+{'rt': 'a0', 'immediate': '0', 'rs': 'sp'}
+rt a0
+immediate 0
+digit: 0
+rs sp
+addi
+{'rt': 'a0', 'immediate': '-1', 'rs': 'a0'}
+rt a0
+immediate -1
+digit: -1
+rs a0
+jal
+{'addr': 'sumToN'}
+lw
+{'rt': 'a0', 'immediate': '0', 'rs': 'sp'}
+rt a0
+immediate 0
+digit: 0
+rs sp
+lw
+{'rt': 'ra', 'immediate': '4', 'rs': 'sp'}
+rt ra
+immediate 4
+digit: 4
+rs sp
+addi
+{'rt': 'sp', 'immediate': '8', 'rs': 'sp'}
+rt sp
+immediate 8
+digit: 8
+rs sp
+add
+{'rd': 'v0', 'rs': 'v0', 'rt': 'a0'}
+rd v0
+rs v0
+rt a0
+jr
+{'rs': 'ra'}
+rs ra
+recur 692
+sumToN 676
