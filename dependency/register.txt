@@ -1,0 +1,32 @@
+zero 0 Constant 0
+at 1 Reserved for assembler
+v0 2 Expression evaluation and
+v1 3 results of a function
+a0 4 Argument 1
+a1 5 Argument 2
+a2 6 Argument 3
+a3 7 Argument 4
+t0 8 Temporary (not preserved across call)
+t1 9 Temporary (not preserved across call)
+t2 10 Temporary (not preserved across call)
+t3 11 Temporary (not preserved across call)
+t4 12 Temporary (not preserved across call)
+t5 13 Temporary (not preserved across call)
+t6 14 Temporary (not preserved across call)
+t7 15 Temporary (not preserved across call)
+s0 16 Saved temporary (preserved across call)
+s1 17 Saved temporary (preserved across call)
+s2 18 Saved temporary (preserved across call)
+s3 19 Saved temporary (preserved across call)
+s4 20 Saved temporary (preserved across call)
+s5 21 Saved temporary (preserved across call)
+s6 22 Saved temporary (preserved across call)
+s7 23 Saved temporary (preserved across call)
+t8 24 Temporary (not preserved across call)
+t9 25 Temporary (not preserved across call)
+k0 26 Reserved for OS kernel
+k1 27 Reserved for OS kernel
+gp 28 Pointer to global area
+sp 29 Stack pointer
+fp 30 Frame pointer
+ra 31 Return address (used by function call)
