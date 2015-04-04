@@ -1,4 +1,5 @@
 # Mips2bin v1.0
+(NOTE: It is not include all mips instructions for now, because course progress)
 
 ## Usage:
 1. put mips assembly code into "source" directory
