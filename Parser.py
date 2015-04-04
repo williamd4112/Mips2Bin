@@ -26,10 +26,6 @@ with open('./dependency/register.txt', 'r', encoding='UTF-8') as file:
     	key, value = line.split(" ")[:2]
     	register_map[key] = int(value)
 
-# Parsing code
-base_pc = 288
-pc_offset = base_pc
-
 # fields only literal symbols or digit
 def resolve_symbols(fields):
 	for key in fields:
@@ -95,6 +91,10 @@ with open('./data/' + target_data, 'r', encoding='UTF-8') as file:
 # Text segments
 # Read source code and store unresolved jump label
 target_src = input("Enter source code path: ")
+base_pc_str = input("Enter base PC address: ")
+base_pc = int(base_pc_str)
+pc_offset = base_pc
+
 terminal_out = sys.stdout;
 sys.stdout = open('./log/' + target_src + '.log', 'w')
 with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
