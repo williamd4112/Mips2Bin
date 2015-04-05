@@ -1,21 +1,21 @@
 addi
-{'rs': 'sp', 'rt': 'sp', 'immediate': '-4'}
+{'immediate': '-4', 'rt': 'sp', 'rs': 'sp'}
 sw
-{'rs': 'sp', 'rt': 'ra', 'immediate': '0'}
+{'immediate': '0', 'rt': 'ra', 'rs': 'sp'}
 lw
-{'rs': '0', 'rt': 'a0', 'immediate': '0'}
+{'immediate': '0', 'rt': 'a0', 'rs': '0'}
 lw
-{'rs': '0', 'rt': 'a1', 'immediate': '4'}
+{'immediate': '4', 'rt': 'a1', 'rs': '0'}
 jal
 {'addr': 'sum'}
 sw
-{'rs': '0', 'rt': 'v0', 'immediate': '8'}
+{'immediate': '8', 'rt': 'v0', 'rs': '0'}
 lw
-{'rs': 'sp', 'rt': 'ra', 'immediate': '0'}
+{'immediate': '0', 'rt': 'ra', 'rs': 'sp'}
 addi
-{'rs': 'sp', 'rt': 'sp', 'immediate': '4'}
+{'immediate': '4', 'rt': 'sp', 'rs': 'sp'}
 lw
-{'rs': '0', 'rt': 'v1', 'immediate': '8'}
+{'immediate': '8', 'rt': 'v1', 'rs': '0'}
 halt
 {}
 halt
@@ -27,6 +27,6 @@ halt
 halt
 {}
 add
-{'rd': 'v0', 'rs': 'a0', 'rt': 'a1'}
+{'rt': 'a1', 'rs': 'a0', 'rd': 'v0'}
 jr
 {'rs': 'ra'}

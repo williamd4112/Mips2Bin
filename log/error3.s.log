@@ -1,0 +1,24 @@
+lw
+{'rs': '0', 'rt': 'a0', 'immediate': '0'}
+lw
+{'rs': '0', 'rt': 'a1', 'immediate': '4'}
+addi
+{'rs': '0', 'rt': 'a1', 'immediate': '3'}
+add
+{'rs': 'a1', 'rt': 'a0', 'rd': 'v0'}
+ori
+{'rs': 'v0', 'rt': 'v0', 'immediate': '0xffff'}
+lw
+{'rs': '0', 'rt': 'a2', 'immediate': '1'}
+lh
+{'rs': '0', 'rt': 'v1', 'immediate': '1'}
+lh
+{'rs': '0', 'rt': 'a4', 'immediate': '2'}
+invalid literal for int() with base 10: 'a4'
+Unresolved symbols  lh {'rs': '0', 'rt': 'a4', 'immediate': '2'}
+halt
+{}
+halt
+{}
+halt
+{}

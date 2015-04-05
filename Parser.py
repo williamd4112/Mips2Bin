@@ -1,167 +1,169 @@
+#!/usr/bin/python3
+
 import sys
 import re
+import os
+from Lexer import Lexer
 
-lazyresolved_op = ["beq", "bne", "j", "jal"]
-lazyresolved_field = ["addr"]
-r_types = ["add", "sub", "and", "or", "xor", "nor", "nand", "slt", "sll", "srl", "sra", "jr"]
-i_types = ["addi", "lw", "lh", "lhu", "lb", "lbu", "sw", "sh", "sb", "lui", "andi", "ori", "nori", "slti"]
-field_offset = {"rs":21, "rt":16, "rd":11, "shamt": 6, "immediate":0, "addr":0}
-field_mask = {"rs":31, "rt":31, "rd":31, "shamt":31, "immediate":0xffff, "addr":0x3FFFFFF}
-
-opcode_map = {}
-register_map = {}
-labels = {}
+# Lazy resolved word list
 unresolved_word = []
+
+# Instruction image / Data image
 iimage = []
+dimage = []
 
-# build opcode_map by dictionary file
-with open('./dependency/dictionary.txt', 'r', encoding='UTF-8') as file:
-    for line in file:
-    	op, hexcode, regx = line.split(" ")[:3]
-    	opcode_map[op] = {"code":int(hexcode, 16), "regex":regx.rstrip()}
+# Base Stack pointer / Program counter
+base_sp = 1024
+base_pc = 0
 
-# build register_map by register file
-with open('./dependency/register.txt', 'r', encoding='UTF-8') as file:
-    for line in file:
-    	key, value = line.split(" ")[:2]
-    	register_map[key] = int(value)
+custom_output = False
 
-# fields only literal symbols or digit
-def resovle_digit_form(digit_str):
-	if re.match("[+-]?0x[0-9A-Fa-f]+", digit_str):
-		return 16
+def print_usage():
+	print("Usage:  mipsi <-o> <output path> <-s-d> <source file / data file> <Base PC / SP address>")
+	print("-s: interpret source file")
+	print("-d: interpret data file")
+	print("-o: optional, custom output path, default is iimage.bin/dimage.bin at input file directory")
+
+# Parse options
+# illegal usage
+if len(sys.argv) < 2:
+	print_usage()
+	exit(1)
+# Ouput custom
+elif sys.argv[1] == '-o':
+	if len(sys.argv) >= 5:
+		custom_output = True
+		output_path = sys.argv[2]
+		option = sys.argv[3]
+		input_path = sys.argv[4]
+
+		# Optional custom PC address
+		if len(sys.argv) == 6:
+			base_pc = int(sys.argv[5])
+
 	else:
-		return 10
+		print_usage()
+		exit(1)
+# Default output
+elif sys.argv[1] == '-s' or sys.argv[1] == '-d':
+	if len(sys.argv) >= 3:
+		option = sys.argv[1]
+		input_path = sys.argv[2]
 
-def resolve_symbols(fields):
-	for key in fields:
-		if key in lazyresolved_field:
-			continue
-		try:
-			value = fields[key]
+		# Optional custom PC address
+		if len(sys.argv) == 4:
+			base_pc = int(sys.argv[3])
 
-			if value in register_map:
-				yield (((register_map[value]) & field_mask[key]) << field_offset[key])
-			else:
-				yield ((int(value, resovle_digit_form(value)) & field_mask[key]) << field_offset[key])
-		except ValueError as e:
-			print(e)
-			raise KeyError
+# getIndex in iimage
+def getIndex(pc, base):
+	return int((pc - base) / 4)
 
-def resolve(command_pc, op, fields):
-	try:
-		for field in resolve_symbols(fields):
-			word = iimage[int((command_pc - base_pc) / 4)] 
-			iimage[int((command_pc - base_pc) / 4)]  = word | field
-	except KeyError as e:
-		print("Unresolved symbols " ,op, fields)
-
-def resolve_jal(command_pc, jump_label):
-	# label_pc = pc_part | x << 2
-	label_pc = labels[jump_label]
-	c = (label_pc & 0x0FFFFFFF) >> 2; # mask pc part, and shift right 2
-	iimage[int((command_pc - base_pc) / 4)] = iimage[int((command_pc - base_pc) / 4)] | c
-
-
-def resolve_beq(command_pc, jump_label):
-	# label_pc = command_pc + 4 + 4 * c
-	label_pc = labels[jump_label]
-	c = ((label_pc - command_pc - 4) >> 2) & 0x0000ffff
-	iimage[int((command_pc - base_pc) / 4)] = iimage[int((command_pc - base_pc) / 4)] | c
-
-def writeWord(word):
+# Write a 32 bit word to binary file in big-endian
+def writeWord(file, word):
 	offsets = [24, 16, 8, 0]
 	for offset in offsets:
 		file.write(bytes([ (word >> offset) & 0xff ]))
 
-# Data segments
-dimage = []
-target_data = input("Enter data memory path: ")
-base_sp = 0
-with open('./data/' + target_data, 'r', encoding='UTF-8') as file:
-    for line in file:
-    	form, value = line.split('\'', 1)[:2]
-    	if form.endswith("d"):
-    		value = int(value)
-    	elif form.endswith('h'):
-    		value = int(value, 16)
-    	if form.startswith('sp'):
-    		base_sp = value
-    	else:
-    		dimage.append(value)
+# Output iimage
+def output(path, image, header):
+	with open(path, 'bw+') as file:
+		for word in header + image:
+			writeWord(file, word)
+		print(path + " output")
 
-# Text segments
-# Read source code and store unresolved jump label
-target_src = input("Enter source code path: ")
-base_pc_str = input("Enter base PC address: ")
-base_pc = int(base_pc_str)
-pc_offset = base_pc
+# Interpret source file and return how many bytes be written
+def interpret_src(filename):	
+	pc_offset = base_pc
+	with open(filename, 'r', encoding='UTF-8') as file:
+	    for line in file:
+	    	line = line.strip()
+	    	op = line.split(' ', 1);
 
+	    	# Parse labels
+	    	if op[0].endswith(':'):
+	    		Lexer.labels[op[0][:-1]] = pc_offset
+
+	    		# label and expression in the same line
+	    		if len(op) > 1:
+	    			line = op[1]
+	    			op = op[1].split(' ', 1)
+
+	    	# Parse expression
+	    	try:
+	    		print(op[0])
+	    		match = re.match(Lexer.opcode_map[op[0]]["regex"], line)
+
+	    		# Syntax check
+	    		if match:
+	    			fields = match.groupdict()
+	    			print(fields)
+
+	    			# print("0x%08x"%opcode_map[op[0]]["code"])
+	    			iimage.append(Lexer.opcode_map[op[0]]["code"])
+	    			word = iimage[getIndex(pc_offset, base_pc)]
+	    			iimage[getIndex(pc_offset, base_pc)] = Lexer.resolve(pc_offset, word, op[0], fields)
+
+	    			# If lazy resolved
+	    			if op[0] in Lexer.lazyresolved_op:
+	    				unresolved_word.append({"pc":pc_offset, "op":op[0],"label": fields["addr"]})
+	    		else:
+	    			print("Syntax Error at %d: %s"%(pc_offset, op[0]))
+	    			break
+
+	    		# Read next instruction
+	    		pc_offset = pc_offset + 4
+
+	    	except KeyError as e:
+	    		print("Unknown command: ", e)
+	    		break
+	
+	# Lazy Resolve words
+	for record in unresolved_word:
+		pc = record['pc']
+		op = record['op']
+		label = record['label']
+		word = iimage[getIndex(pc, base_pc)]
+
+		iimage[getIndex(pc, base_pc)] = Lexer.lazyresolve(pc, word, op, label)    		
+
+	return pc_offset
+
+# Interpret data file
+def interpret_data(filename):
+	with open(filename, 'r', encoding='UTF-8') as file:
+	    for line in file:
+	    	form, value = line.split('\'', 1)[:2]
+	    	if form.endswith("d"):
+	    		value = int(value)
+	    	elif form.endswith('h'):
+	    		value = int(value, 16)
+	    	dimage.append(value)
+
+# Output path
+if not custom_output:
+	# Output file name
+	if option == '-s': 
+		output_filename = 'iimage.bin'
+	else:
+		output_filename = 'dimage.bin'
+
+	output_path = os.getcwd() + '/' + output_filename
+
+# Change stdout to log file
 terminal_out = sys.stdout;
-sys.stdout = open('./log/' + target_src + '.log', 'w')
-with open('./source/' + target_src, 'r', encoding='UTF-8') as file:
-    for line in file:
-    	line = line.strip()
-    	op = line.split(' ', 1);
+input_filename = input_path.rsplit('/')[-1]
+sys.stdout = open(sys.path[0] + '/log/' + input_filename + '.log', 'w')
 
-    	# Parse labels
-    	if op[0].endswith(':'):
-    		labels[op[0][:-1]] = pc_offset
-
-    		# label and expression in the same line
-    		if len(op) > 1:
-    			line = op[1]
-    			op = op[1].split(' ', 1)
-
-    	# Parse expression
-    	try:
-    		print(op[0])
-    		match = re.match(opcode_map[op[0]]["regex"], line)
-
-    		# Syntax check
-    		if match:
-    			fields = match.groupdict()
-    			print(fields)
-    			# print("0x%08x"%opcode_map[op[0]]["code"])
-    			iimage.append(opcode_map[op[0]]["code"])
-
-    			resolve(pc_offset, op[0], fields)
-    			# If lazy resolved
-    			if op[0] in lazyresolved_op:
-    				unresolved_word.append({"pc":pc_offset, "op":op[0],"label": fields["addr"]})
-    		else:
-    			print("Syntax Error at %d: %s"%(pc_offset, op[0]))
-
-    		# Read next instruction
-    		pc_offset = pc_offset + 4
-
-    	except KeyError as e:
-    		print("Unknown command: ", e)
-
-# Lazy Resolve words
-for record in unresolved_word:
-	if record["op"] == "jal" or record["op"] == "j":
-		resolve_jal(record["pc"], record["label"])
-	elif record["op"] == "beq" or record["op"] == "bne":
-		resolve_beq(record["pc"], record["label"])
-
-
+# Process input
+if option == '-s':
+	offset = interpret_src(input_path)
+	image = iimage
+	header = [base_pc, int((offset - base_pc) / 4)]
+elif option == '-d':
+	interpret_data(input_path)
+	image = dimage
+	header = [base_sp, len(dimage)]
 
 # Ouput binary file
-# print(base_pc, int((pc_offset - base_pc) / 4))
 sys.stdout = terminal_out
-with open("./output/" + target_src + "_iimage.bin", 'bw+') as file:
-	writeWord(base_pc) # Write base_pc
-	writeWord(int((pc_offset - base_pc) / 4)) # Write word count
-	for word in iimage:
-		writeWord(word)
-	print("./output/" + target_src + "_iimage.bin" + " output")
-
-with open("./output/" + target_data + "_dmage.bin", 'bw+') as file:
-	writeWord(base_sp) # Write base_pc
-	writeWord(len(dimage)) # Write word count
-	for word in dimage:
-		writeWord(word)
-	print("./output/" + target_data + "_dmage.bin" + " output")
-	
-print('./log/' + target_src + '.log' + " output")
+output(output_path, image, header)
